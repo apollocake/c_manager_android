@@ -3,24 +3,32 @@ const LONG_PRESS_DURATION = 500; // ms before popup appears
 let longPressTimer = null;
 let activeInput = null;
 let popupEl = null;
+let popupRepositionRaf = null;
 
-debugger;
+const DEFAULT_RESOURCES = [
+  {
+    label: "Error: No resources provided",
+    text: "Please define window.INJECTOR_RESOURCES as an array of { label, text } objects."
+  }
+];
+
+const RESOURCES = Array.isArray(window.INJECTOR_RESOURCES)
+  ? window.INJECTOR_RESOURCES
+  : DEFAULT_RESOURCES;
+
 console.log("Injector script loaded");
 // --- Popup ---
 
 function createPopup(input) {
-  debugger;
   removePopup();
   activeInput = input;
-
-  const rect = input.getBoundingClientRect();
 
   // Outer wrapper uses fixed positioning so it stays near the input on scroll
   popupEl = document.createElement("div");
   Object.assign(popupEl.style, {
     position: "fixed",
-    top: `${rect.bottom + 6}px`,
-    left: `${Math.max(4, rect.left)}px`,
+    top: "0px",
+    left: "0px",
     zIndex: "2147483647",
   });
 
@@ -37,6 +45,7 @@ function createPopup(input) {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       display: flex;
       align-items: center;
+      gap: 8px;
     }
     button {
       background: #ff9500;
@@ -58,39 +67,112 @@ function createPopup(input) {
   const container = document.createElement("div");
   container.className = "popup";
 
-  const btn = document.createElement("button");
-  btn.textContent = "Insert Hello World";
-  debugger;
-  btn.addEventListener("click", (e) => {
-  debugger;
-    e.stopPropagation();
-    injectText(activeInput);
-    removePopup();
-  });
+  const validItems = RESOURCES.filter(
+    (item) => item && typeof item.label === "string" && typeof item.text === "string"
+  );
 
-  container.appendChild(btn);
+  validItems.forEach((item) => {
+    const btn = document.createElement("button");
+    btn.textContent = item.label;
+    btn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      injectText(activeInput, item.text);
+      removePopup();
+    });
+    container.appendChild(btn);
+  });
   shadow.appendChild(style);
   shadow.appendChild(container);
   document.body.appendChild(popupEl);
 
+  positionPopup();
+  addRepositionListeners();
+
   // Dismiss on any interaction outside the popup
   setTimeout(() => {
+    document.addEventListener("pointerdown", handleOutside, true);
     document.addEventListener("touchstart", handleOutside, true);
     document.addEventListener("mousedown", handleOutside, true);
   }, 0);
 }
 
+function positionPopup() {
+  if (!popupEl || !activeInput) {
+    return;
+  }
+
+  const rect = activeInput.getBoundingClientRect();
+  const viewportWidth = window.visualViewport?.width || window.innerWidth;
+  const popupWidth = popupEl.offsetWidth || 170;
+
+  const top = Math.max(4, rect.bottom + 6);
+  const left = Math.min(
+    Math.max(4, rect.left),
+    Math.max(4, viewportWidth - popupWidth - 4)
+  );
+
+  popupEl.style.top = `${top}px`;
+  popupEl.style.left = `${left}px`;
+}
+
+function schedulePositionPopup() {
+  if (!popupEl) {
+    return;
+  }
+
+  if (popupRepositionRaf) {
+    cancelAnimationFrame(popupRepositionRaf);
+  }
+
+  popupRepositionRaf = requestAnimationFrame(() => {
+    popupRepositionRaf = null;
+    positionPopup();
+  });
+}
+
+function addRepositionListeners() {
+  window.addEventListener("scroll", schedulePositionPopup, true);
+  window.addEventListener("resize", schedulePositionPopup, true);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", schedulePositionPopup);
+    window.visualViewport.addEventListener("scroll", schedulePositionPopup);
+  }
+}
+
+function removeRepositionListeners() {
+  window.removeEventListener("scroll", schedulePositionPopup, true);
+  window.removeEventListener("resize", schedulePositionPopup, true);
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener("resize", schedulePositionPopup);
+    window.visualViewport.removeEventListener("scroll", schedulePositionPopup);
+  }
+  if (popupRepositionRaf) {
+    cancelAnimationFrame(popupRepositionRaf);
+    popupRepositionRaf = null;
+  }
+}
+
 function handleOutside(e) {
-  if (popupEl && !popupEl.contains(e.target)) {
+  if (!popupEl) {
+    return;
+  }
+
+  const path = typeof e.composedPath === "function" ? e.composedPath() : [];
+  const clickedInsidePopup = path.includes(popupEl) || popupEl.contains(e.target);
+
+  if (!clickedInsidePopup) {
     removePopup();
   }
 }
 
 function removePopup() {
+  removeRepositionListeners();
   if (popupEl) {
     popupEl.remove();
     popupEl = null;
   }
+  document.removeEventListener("pointerdown", handleOutside, true);
   document.removeEventListener("touchstart", handleOutside, true);
   document.removeEventListener("mousedown", handleOutside, true);
   activeInput = null;
@@ -98,20 +180,20 @@ function removePopup() {
 
 // --- Text injection ---
 
-function injectText(input) {
+function injectText(input, text) {
   if (!input) return;
+  if (!text) return;
   input.focus();
 
   // contenteditable elements (e.g. rich text editors)
   if (input.isContentEditable) {
-    document.execCommand("insertText", false, "Hello World");
+    document.execCommand("insertText", false, text);
     return;
   }
 
   const start = input.selectionStart ?? input.value.length;
   const end = input.selectionEnd ?? input.value.length;
-  const newValue =
-    input.value.slice(0, start) + "Hello World" + input.value.slice(end);
+  const newValue = input.value.slice(0, start) + text + input.value.slice(end);
 
   // Use the native value setter so React-style frameworks detect the change
   const proto =
@@ -125,7 +207,7 @@ function injectText(input) {
     input.value = newValue;
   }
 
-  input.selectionStart = input.selectionEnd = start + "Hello World".length;
+  input.selectionStart = input.selectionEnd = start + text.length;
   input.dispatchEvent(new Event("input", { bubbles: true }));
   input.dispatchEvent(new Event("change", { bubbles: true }));
 }
