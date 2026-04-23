@@ -1,4 +1,4 @@
-const LONG_PRESS_DURATION = 500; // ms before popup appears
+const LONG_PRESS_DURATION = 1100; // ms before popup appears
 
 let longPressTimer = null;
 let activeInput = null;
@@ -65,6 +65,11 @@ function createPopup(input) {
 
   popupEl.appendChild(container);
   document.body.appendChild(popupEl);
+
+  // Blur after capturing the insertion target so Android can dismiss the keyboard.
+  if (typeof activeInput?.blur === "function") {
+    activeInput.blur();
+  }
 
   positionPopup();
   addRepositionListeners();
@@ -163,17 +168,16 @@ function removePopup() {
 function injectText(input, text) {
   if (!input) return;
   if (!text) return;
-  input.focus();
 
   // contenteditable elements (e.g. rich text editors)
   if (input.isContentEditable) {
-    document.execCommand("insertText", false, text);
+    input.textContent = `${input.textContent || ""}${text}`;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
     return;
   }
 
-  const start = input.selectionStart ?? input.value.length;
-  const end = input.selectionEnd ?? input.value.length;
-  const newValue = input.value.slice(0, start) + text + input.value.slice(end);
+  const newValue = `${input.value}${text}`;
 
   // Use the native value setter so React-style frameworks detect the change
   const proto =
@@ -187,7 +191,6 @@ function injectText(input, text) {
     input.value = newValue;
   }
 
-  input.selectionStart = input.selectionEnd = start + text.length;
   input.dispatchEvent(new Event("input", { bubbles: true }));
   input.dispatchEvent(new Event("change", { bubbles: true }));
 }
