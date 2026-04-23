@@ -1,4 +1,12 @@
-# TODO
+# README
+
+## Development
+
+### 1 — Start and Run extension on Phone via USB
+Run from the project folder:
+```
+npx web-ext run -t firefox-android --firefox-apk org.mozilla.firefox --android-device=9A181FFAZ003KA --adb-remove-old-artifacts
+```
 
 ## Export
 
