@@ -3,3 +3,4 @@
 - [ ] Evaluate whether import parsing can be simplified to direct JSON.parse only, instead of the current normalization/shape-handling flow.
 - [ ] Investigate being able to use URLs for the JSON instead of having to download JSON first. Ideally we will have 3 modes, but might be too cluttered ATM: manual, import, URL
 - [ ] Consider QOL up/down grades from using Vue, TS, and Node script management
+- [ ] Add License for source code
