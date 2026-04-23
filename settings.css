@@ -71,12 +71,73 @@ label {
   margin-bottom: 8px;
 }
 
-#long-press-input {
+#long-press-input,
+#resources-file-input {
   width: 110px;
   padding: 8px 10px;
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
+}
+
+#resources-file-input {
+  width: 100%;
+}
+
+#import-resources-btn {
+  margin-top: 10px;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#import-resources-btn:active {
+  background: #f0f0f0;
+}
+
+#import-resources-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+#resources-json-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  resize: vertical;
+}
+
+#import-json-btn {
+  margin-top: 8px;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#import-json-btn:active {
+  background: #f0f0f0;
+}
+
+#resource-source-section small {
+  display: block;
+  margin-top: 8px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 /* ---- Snippet card ---- */

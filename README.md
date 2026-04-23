@@ -7,6 +7,11 @@ Run from the project folder:
 ```
 npx web-ext run -t firefox-android --firefox-apk org.mozilla.firefox --android-device=9A181FFAZ003KA --adb-remove-old-artifacts
 ```
+To remotely debug on PC: In Firefox desktop, over USB, navigate to:
+```
+about:debugging#/runtime/this-firefox
+
+Click connect
 
 ## Export
 

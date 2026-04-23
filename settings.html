@@ -18,6 +18,20 @@
     <input id="long-press-input" type="number" min="200" max="5000" step="100" />
   </section>
 
+  <section id="resource-source-section">
+    <h2>Resource Source</h2>
+    <label for="resources-file-input">Import JSON resource file (optional)</label>
+    <input id="resources-file-input" type="file" />
+    <button id="import-resources-btn" type="button">Import File</button>
+    <label for="resources-json-input">Or paste JSON directly</label>
+    <textarea id="resources-json-input" rows="6" placeholder='[{"label":"Hello","text":["Hello World"]}]'></textarea>
+    <button id="import-json-btn" type="button">Import Pasted JSON</button>
+    <small>
+      Supports either a top-level array of snippets or an object with a resources array.
+      Imported snippets are staged in the editor; tap Save to apply them.
+    </small>
+  </section>
+
   <section id="snippets-section">
     <h2>Snippets</h2>
     <div id="snippet-list"></div>

@@ -8,7 +8,12 @@ const snippetList = document.getElementById("snippet-list");
 const addSnippetBtn = document.getElementById("add-snippet-btn");
 const saveBtn = document.getElementById("save-btn");
 const longPressInput = document.getElementById("long-press-input");
+const resourcesFileInput = document.getElementById("resources-file-input");
+const importResourcesBtn = document.getElementById("import-resources-btn");
+const resourcesJsonInput = document.getElementById("resources-json-input");
+const importJsonBtn = document.getElementById("import-json-btn");
 const statusEl = document.getElementById("status");
+let selectedImportFile = null;
 
 // ---------------------------------------------------------------------------
 // Load
@@ -36,6 +41,18 @@ function normalizeSnippet(item) {
       ? item.text.map(String)
       : [String(item.text || "")],
   };
+}
+
+function normalizeImportedSnippets(payload) {
+  const rawItems = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.resources)
+      ? payload.resources
+      : [];
+
+  return rawItems
+    .map(normalizeSnippet)
+    .filter((item) => item.label.trim() !== "" || item.text.some((line) => line.trim() !== ""));
 }
 
 // ---------------------------------------------------------------------------
@@ -173,6 +190,78 @@ addSnippetBtn.addEventListener("click", () => {
   snippetList.lastElementChild?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+function readFileAsText(file) {
+  if (typeof file?.text === "function") {
+    return file.text();
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error || new Error("Failed to read file."));
+    reader.readAsText(file);
+  });
+}
+
+function applyImportedSnippets(imported) {
+  if (imported.length === 0) {
+    showStatus("No valid snippets found in input.");
+    return false;
+  }
+
+  snippets = imported;
+  renderAll();
+  showStatus(`Imported ${imported.length} snippet(s). Tap Save.`);
+  return true;
+}
+
+resourcesFileInput.addEventListener("change", () => {
+  selectedImportFile = resourcesFileInput.files?.[0] || null;
+  importResourcesBtn.disabled = !selectedImportFile;
+
+  if (selectedImportFile) {
+    showStatus(`Selected: ${selectedImportFile.name}`);
+  }
+});
+
+importResourcesBtn.addEventListener("click", async () => {
+  const file = selectedImportFile || resourcesFileInput.files?.[0] || null;
+
+  if (!file) {
+    showStatus("Choose a JSON file first.");
+    return;
+  }
+
+  try {
+    const raw = await readFileAsText(file);
+    const imported = normalizeImportedSnippets(JSON.parse(raw));
+    if (applyImportedSnippets(imported)) {
+      selectedImportFile = null;
+      resourcesFileInput.value = "";
+      importResourcesBtn.disabled = true;
+    }
+  } catch (error) {
+    console.warn("Failed to import resources file.", error);
+    showStatus("Import failed. Check JSON format and encoding.");
+  }
+});
+
+importJsonBtn.addEventListener("click", () => {
+  const raw = resourcesJsonInput.value;
+
+  if (!raw.trim()) {
+    showStatus("Paste JSON first.");
+    return;
+  }
+
+  try {
+    const imported = normalizeImportedSnippets(JSON.parse(raw));
+    applyImportedSnippets(imported);
+  } catch (error) {
+    showStatus("Pasted JSON is invalid.");
+  }
+});
+
 // ---------------------------------------------------------------------------
 // Save
 // ---------------------------------------------------------------------------
@@ -185,7 +274,11 @@ saveBtn.addEventListener("click", async () => {
     (s) => s.label.trim() !== "" || s.text.some((t) => t.trim() !== "")
   );
 
-  await browser.storage.local.set({ resources: validSnippets, longPressDuration });
+  await browser.storage.local.set({
+    resources: validSnippets,
+    longPressDuration,
+  });
+  await browser.storage.local.remove("resourcesJsonUrl");
   showStatus("Saved!");
 });
 
@@ -199,4 +292,5 @@ function showStatus(msg) {
 // Init
 // ---------------------------------------------------------------------------
 
+importResourcesBtn.disabled = true;
 load();

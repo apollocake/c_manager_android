@@ -16,15 +16,45 @@ let RESOURCES = Array.isArray(window.INJECTOR_RESOURCES)
   ? window.INJECTOR_RESOURCES
   : DEFAULT_RESOURCES;
 
-// Override defaults with any settings persisted via the settings page.
-browser.storage.local.get(["resources", "longPressDuration"]).then((data) => {
-  if (Array.isArray(data.resources) && data.resources.length > 0) {
-    RESOURCES = data.resources;
+function normalizeResources(items) {
+  if (!Array.isArray(items)) {
+    return [];
   }
-  if (typeof data.longPressDuration === "number") {
-    LONG_PRESS_DURATION = data.longPressDuration;
+
+  return items
+    .map((item) => {
+      const label = String(item?.label || "").trim();
+      const text = Array.isArray(item?.text)
+        ? item.text.map((part) => String(part))
+        : [String(item?.text || "")];
+      return { label, text };
+    })
+    .filter((item) => item.text.length > 0);
+}
+
+function getBundledResources() {
+  return normalizeResources(window.INJECTOR_RESOURCES || DEFAULT_RESOURCES);
+}
+
+// Load resources with precedence: saved settings resources -> bundled file.
+async function hydrateConfig() {
+  try {
+    const data = await browser.storage.local.get(["resources", "longPressDuration"]);
+
+    if (typeof data.longPressDuration === "number") {
+      LONG_PRESS_DURATION = data.longPressDuration;
+    }
+
+    const savedResources = normalizeResources(data.resources);
+
+    RESOURCES = savedResources.length > 0 ? savedResources : getBundledResources();
+  } catch (error) {
+    console.warn("Failed to load extension settings; using bundled resources.", error);
+    RESOURCES = getBundledResources();
   }
-});
+}
+
+hydrateConfig();
 // --- Popup ---
 
 function createPopup(input) {
