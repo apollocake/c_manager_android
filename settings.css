@@ -1,0 +1,240 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  margin: 0;
+  padding: 0 0 60px;
+  background: #f5f5f5;
+  color: #111;
+}
+
+/* ---- Header ---- */
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+h2 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+#save-btn {
+  background: #ff9500;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#save-btn:active {
+  background: #cc7900;
+}
+
+/* ---- Sections ---- */
+
+section {
+  margin: 14px 12px 0;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid #e0e0e0;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+#long-press-input {
+  width: 110px;
+  padding: 8px 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* ---- Snippet card ---- */
+
+.snippet-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.snippet-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #efefef;
+  border-bottom: 1px solid #ddd;
+}
+
+.snippet-label-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+/* ---- Icon buttons ---- */
+
+.icon-btn {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #555;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.danger-btn {
+  color: #c00;
+  border-color: #f5c6c6;
+}
+
+.danger-btn:active {
+  background: #fee;
+}
+
+/* ---- Text lines ---- */
+
+.lines-wrap {
+  padding: 10px;
+}
+
+.line-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.line-num {
+  font-size: 12px;
+  color: #aaa;
+  padding-top: 9px;
+  width: 16px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.line-input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 9px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.remove-line-btn {
+  margin-top: 5px;
+  font-size: 11px;
+  padding: 4px 7px;
+  color: #c00;
+  border-color: #f5c6c6;
+}
+
+.add-line-btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: 1px dashed #bbb;
+  border-radius: 6px;
+  color: #777;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.add-line-btn:active {
+  background: #f0f0f0;
+}
+
+/* ---- Add snippet button ---- */
+
+#add-snippet-btn {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px;
+  background: none;
+  border: 2px dashed #ff9500;
+  border-radius: 10px;
+  color: #ff9500;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+#add-snippet-btn:active {
+  background: #fff8ee;
+}
+
+/* ---- Status toast ---- */
+
+#status {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 20px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#status.visible {
+  opacity: 1;
+}

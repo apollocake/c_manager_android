@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>c_manager_android — Settings</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <header>
+    <h1>Settings</h1>
+    <button id="save-btn" type="button">Save</button>
+  </header>
+
+  <section id="duration-section">
+    <h2>Long Press Duration</h2>
+    <label for="long-press-input">Hold duration before popup appears (ms)</label>
+    <input id="long-press-input" type="number" min="200" max="5000" step="100" />
+  </section>
+
+  <section id="snippets-section">
+    <h2>Snippets</h2>
+    <div id="snippet-list"></div>
+    <button id="add-snippet-btn" type="button">+ Add Snippet</button>
+  </section>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <script src="injector.resources.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

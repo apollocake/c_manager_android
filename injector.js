@@ -1,4 +1,4 @@
-const LONG_PRESS_DURATION = 1100; // ms before popup appears
+let LONG_PRESS_DURATION = 1100; // ms before popup appears — may be overridden from storage
 
 let longPressTimer = null;
 let activeInput = null;
@@ -12,11 +12,19 @@ const DEFAULT_RESOURCES = [
   }
 ];
 
-const RESOURCES = Array.isArray(window.INJECTOR_RESOURCES)
+let RESOURCES = Array.isArray(window.INJECTOR_RESOURCES)
   ? window.INJECTOR_RESOURCES
   : DEFAULT_RESOURCES;
 
-console.log("Injector script loaded");
+// Override defaults with any settings persisted via the settings page.
+browser.storage.local.get(["resources", "longPressDuration"]).then((data) => {
+  if (Array.isArray(data.resources) && data.resources.length > 0) {
+    RESOURCES = data.resources;
+  }
+  if (typeof data.longPressDuration === "number") {
+    LONG_PRESS_DURATION = data.longPressDuration;
+  }
+});
 // --- Popup ---
 
 function createPopup(input) {
