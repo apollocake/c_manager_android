@@ -1,87 +1,87 @@
 window.INJECTOR_RESOURCES = [
   {
-    label: "Insert Hello World",
+    label: "Hello",
     text: "Hello World"
   },
   {
-    label: "Insert Goodbye World",
+    label: "Goodbye",
     text: "Goodbye World"
   },
   {
-    label: "Insert Alpha",
-    text: "Alpha"
+    label: "Alpha",
+    text: "Alpha Text"
   },
   {
-    label: "Insert Bravo",
-    text: "Bravo"
+    label: "Bravo",
+    text: "Bravo Text"
   },
   {
-    label: "Insert Charlie",
-    text: "Charlie"
+    label: "Charlie",
+    text: "Charlie Text"
   },
   {
-    label: "Insert Delta",
-    text: "Delta"
+    label: "Delta",
+    text: "Delta Text"
   },
   {
-    label: "Insert Echo",
-    text: "Echo"
+    label: "Echo",
+    text: "Echo Text"
   },
   {
-    label: "Insert Foxtrot",
-    text: "Foxtrot"
+    label: "Foxtrot",
+    text: "Foxtrot Text"
   },
   {
-    label: "Insert Golf",
-    text: "Golf"
+    label: "Golf",
+    text: "Golf Text"
   },
   {
-    label: "Insert Hotel",
-    text: "Hotel"
+    label: "Hotel",
+    text: "Hotel Text"
   },
   {
-    label: "Insert India",
-    text: "India"
+    label: "India",
+    text: "India Text"
   },
   {
-    label: "Insert Juliet",
-    text: "Juliet"
+    label: "Juliet",
+    text: "Juliet Text"
   },
   {
-    label: "Insert Kilo",
-    text: "Kilo"
+    label: "Kilo",
+    text: "Kilo Text"
   },
   {
-    label: "Insert Lima",
-    text: "Lima"
+    label: "Lima",
+    text: "Lima Text"
   },
   {
-    label: "Insert Mike",
-    text: "Mike"
+    label: "Mike",
+    text: "Mike Text"
   },
   {
-    label: "Insert November",
-    text: "November"
+    label: "November",
+    text: "November Text"
   },
   {
-    label: "Insert Oscar",
-    text: "Oscar"
+    label: "Oscar",
+    text: "Oscar Text"
   },
   {
-    label: "Insert Papa",
-    text: "Papa"
+    label: "Papa",
+    text: "Papa Text"
   },
   {
-    label: "Insert Quebec",
-    text: "Quebec"
+    label: "Quebec",
+    text: "Quebec Text"
   },
   {
-    label: "Insert Romeo",
-    text: "Romeo"
+    label: "Romeo",
+    text: "Romeo Text"
   },
   {
-    label: "Insert Sierra",
-    text: "Sierra"
+    label: "Sierra",
+    text: "Sierra Text"
   }
   
 ];

@@ -40,16 +40,27 @@ function createPopup(input) {
   );
 
   validItems.forEach((item) => {
-    const btn = document.createElement("button");
-    btn.className = "injector-button";
-    btn.textContent = item.label;
-    btn.addEventListener("pointerdown", (e) => {
+    const row = document.createElement("div");
+    row.className = "injector-row";
+
+    const label = document.createElement("span");
+    label.className = "injector-label";
+    label.textContent = item.label;
+
+    const insertBtn = document.createElement("button");
+    insertBtn.className = "injector-insert-button";
+    insertBtn.type = "button";
+    insertBtn.textContent = "Insert";
+    insertBtn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       e.stopPropagation();
       injectText(activeInput, item.text);
       removePopup();
     });
-    container.appendChild(btn);
+
+    row.appendChild(label);
+    row.appendChild(insertBtn);
+    container.appendChild(row);
   });
 
   popupEl.appendChild(container);
