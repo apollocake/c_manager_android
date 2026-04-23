@@ -17,5 +17,16 @@
   },
   "action": {
     "default_title": "c_manager_android"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://mozilla.org/*",
+        "*://*.mozilla.org/*"
+      ],
+      "js": [
+        "borderify.js"
+      ]
+    }
+  ]
 }
