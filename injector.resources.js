@@ -8,8 +8,8 @@ window.INJECTOR_RESOURCES = [
     text: "Goodbye World"
   },
   {
-    label: "Alpha",
-    text: "Alpha Text"
+    label: "Long Text Example to Test Popup Handling of Larger Content Sizes",
+    text: "Alpha Text that is long enough to test the popup's ability to handle larger content without breaking the layout or overflowing outside the viewport."
   },
   {
     label: "Bravo",
