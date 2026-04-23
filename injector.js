@@ -32,40 +32,8 @@ function createPopup(input) {
     zIndex: "2147483647",
   });
 
-  // Shadow DOM isolates popup styles from the host page
-  const shadow = popupEl.attachShadow({ mode: "closed" });
-
-  const style = document.createElement("style");
-  style.textContent = `
-    .popup {
-      background: #ffffff;
-      border: 1px solid #d0d0d0;
-      border-radius: 8px;
-      padding: 8px 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    button {
-      background: #ff9500;
-      color: #ffffff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 14px;
-      font-size: 14px;
-      font-family: sans-serif;
-      cursor: pointer;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-    }
-    button:active {
-      background: #cc7700;
-    }
-  `;
-
   const container = document.createElement("div");
-  container.className = "popup";
+  container.className = "injector-popup";
 
   const validItems = RESOURCES.filter(
     (item) => item && typeof item.label === "string" && typeof item.text === "string"
@@ -73,6 +41,7 @@ function createPopup(input) {
 
   validItems.forEach((item) => {
     const btn = document.createElement("button");
+    btn.className = "injector-button";
     btn.textContent = item.label;
     btn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
@@ -82,8 +51,8 @@ function createPopup(input) {
     });
     container.appendChild(btn);
   });
-  shadow.appendChild(style);
-  shadow.appendChild(container);
+
+  popupEl.appendChild(container);
   document.body.appendChild(popupEl);
 
   positionPopup();

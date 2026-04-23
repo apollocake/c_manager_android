@@ -25,6 +25,9 @@
       ],
       "all_frames": true,
       "match_about_blank": true,
+      "css": [
+        "injector.css"
+      ],
       "js": [
         "injector.resources.js",
         "injector.js"
