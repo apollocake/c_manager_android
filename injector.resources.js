@@ -1,87 +1,91 @@
 window.INJECTOR_RESOURCES = [
   {
     label: "Hello",
-    text: "Hello World"
+    text: ["Hello World"]
   },
   {
     label: "Goodbye",
-    text: "Goodbye World"
+    text: ["Goodbye World"]
   },
   {
     label: "Long Text Example to Test Popup Handling of Larger Content Sizes",
-    text: "Alpha Text that is long enough to test the popup's ability to handle larger content without breaking the layout or overflowing outside the viewport."
+    text: [
+      "* Alpha Text that is long enough to test the popup's ability to handle larger content without breaking the layout or overflowing outside the viewport.",
+      "* Second line example for textarea insertion.",
+      "* Third line example from text array."
+    ]
   },
   {
     label: "Bravo",
-    text: "Bravo Text"
+    text: ["Bravo Text"]
   },
   {
     label: "Charlie",
-    text: "Charlie Text"
+    text: ["Charlie Text"]
   },
   {
     label: "Delta",
-    text: "Delta Text"
+    text: ["Delta Text"]
   },
   {
     label: "Echo",
-    text: "Echo Text"
+    text: ["Echo Text"]
   },
   {
     label: "Foxtrot",
-    text: "Foxtrot Text"
+    text: ["Foxtrot Text"]
   },
   {
     label: "Golf",
-    text: "Golf Text"
+    text: ["Golf Text"]
   },
   {
     label: "Hotel",
-    text: "Hotel Text"
+    text: ["Hotel Text"]
   },
   {
     label: "India",
-    text: "India Text"
+    text: ["India Text"]
   },
   {
     label: "Juliet",
-    text: "Juliet Text"
+    text: ["Juliet Text"]
   },
   {
     label: "Kilo",
-    text: "Kilo Text"
+    text: ["Kilo Text"]
   },
   {
     label: "Lima",
-    text: "Lima Text"
+    text: ["Lima Text"]
   },
   {
     label: "Mike",
-    text: "Mike Text"
+    text: ["Mike Text"]
   },
   {
     label: "November",
-    text: "November Text"
+    text: ["November Text"]
   },
   {
     label: "Oscar",
-    text: "Oscar Text"
+    text: ["Oscar Text"]
   },
   {
     label: "Papa",
-    text: "Papa Text"
+    text: ["Papa Text"]
   },
   {
     label: "Quebec",
-    text: "Quebec Text"
+    text: ["Quebec Text"]
   },
   {
     label: "Romeo",
-    text: "Romeo Text"
+    text: ["Romeo Text"]
   },
   {
     label: "Sierra",
-    text: "Sierra Text"
+    text: ["Sierra Text"]
   }
   
 ];

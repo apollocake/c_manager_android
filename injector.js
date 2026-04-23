@@ -8,7 +8,7 @@ let popupRepositionRaf = null;
 const DEFAULT_RESOURCES = [
   {
     label: "Error: No resources provided",
-    text: "Please define window.INJECTOR_RESOURCES as an array of { label, text } objects."
+    text: ["Please define window.INJECTOR_RESOURCES as an array of { label, text } objects where text is an array of strings."]
   }
 ];
 
@@ -36,7 +36,12 @@ function createPopup(input) {
   container.className = "injector-popup";
 
   const validItems = RESOURCES.filter(
-    (item) => item && typeof item.label === "string" && typeof item.text === "string"
+    (item) =>
+      item &&
+      typeof item.label === "string" &&
+      Array.isArray(item.text) &&
+      item.text.length > 0 &&
+      item.text.every((part) => typeof part === "string")
   );
 
   validItems.forEach((item) => {
@@ -165,19 +170,34 @@ function removePopup() {
 
 // --- Text injection ---
 
-function injectText(input, text) {
+function resolveInsertText(rawTextParts, input) {
+  const joinedText = rawTextParts
+    .map((part) => String(part))
+    .join("\n");
+
+  const isMultilineTarget = input?.isContentEditable || input?.tagName === "TEXTAREA";
+  if (isMultilineTarget) {
+    return joinedText;
+  }
+
+  // Single-line controls cannot hold line breaks, so flatten them.
+  return joinedText.replace(/\n/g, " ");
+}
+
+function injectText(input, textParts) {
   if (!input) return;
-  if (!text) return;
+  if (!Array.isArray(textParts) || textParts.length === 0) return;
+  const resolvedText = resolveInsertText(textParts, input);
 
   // contenteditable elements (e.g. rich text editors)
   if (input.isContentEditable) {
-    input.textContent = `${input.textContent || ""}${text}`;
+    input.textContent = `${input.textContent || ""}${resolvedText}`;
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.dispatchEvent(new Event("change", { bubbles: true }));
     return;
   }
 
-  const newValue = `${input.value}${text}`;
+  const newValue = `${input.value}${resolvedText}`;
 
   // Use the native value setter so React-style frameworks detect the change
   const proto =
