@@ -1,0 +1,4 @@
+- [ ] Split README into two clear flows: install from signed release file vs run development build.
+- [ ] Remove support for object-shaped import payloads and accept only top-level array JSON for resource import.
+- [ ] Evaluate whether import parsing can be simplified to direct JSON.parse only, instead of the current normalization/shape-handling flow.
+- [ ] Investigate being able to use URLs for the JSON instead of having to download JSON first. Ideally we will have 3 modes, but might be too cluttered ATM: manual, import, URL
