@@ -44,13 +44,11 @@ function normalizeSnippet(item) {
 }
 
 function normalizeImportedSnippets(payload) {
-  const rawItems = Array.isArray(payload)
-    ? payload
-    : Array.isArray(payload?.resources)
-      ? payload.resources
-      : [];
+  if (!Array.isArray(payload)) {
+    throw new Error("Imported JSON must be a top-level array.");
+  }
 
-  return rawItems
+  return payload
     .map(normalizeSnippet)
     .filter((item) => item.label.trim() !== "" || item.text.some((line) => line.trim() !== ""));
 }
@@ -242,7 +240,7 @@ importResourcesBtn.addEventListener("click", async () => {
     }
   } catch (error) {
     console.warn("Failed to import resources file.", error);
-    showStatus("Import failed. Check JSON format and encoding.");
+    showStatus("Import failed. JSON must be a top-level array of snippets.");
   }
 });
 
@@ -258,7 +256,7 @@ importJsonBtn.addEventListener("click", () => {
     const imported = normalizeImportedSnippets(JSON.parse(raw));
     applyImportedSnippets(imported);
   } catch (error) {
-    showStatus("Pasted JSON is invalid.");
+    showStatus("Pasted JSON must be a top-level array of snippets.");
   }
 });
 

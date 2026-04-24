@@ -25,15 +25,13 @@ Use the extension settings page to manage snippet resources. Resources are persi
 
 ### JSON format accepted by import
 
-You can import either:
-- A top-level array of snippets
-- An object containing a `resources` array
+You can import an array of snippets.
 
 Each snippet supports:
 - `label`: string
 - `text`: string or string array
 
-Example A - top-level array:
+Example:
 ```json
 [
   {
@@ -45,18 +43,6 @@ Example A - top-level array:
     "text": ["Line 1", "Line 2", "Line 3"]
   }
 ]
-```
-
-Example B - object with `resources`:
-```json
-{
-  "resources": [
-    {
-      "label": "Single string also works",
-      "text": "This becomes one text line"
-    }
-  ]
-}
 ```
 
 ### Import flow (hydrate UI from JSON)
