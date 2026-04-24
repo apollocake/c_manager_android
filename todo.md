@@ -1,6 +1,12 @@
-- [ ] Investigate being able to use URLs for the JSON instead of having to download JSON first. Ideally we will have 4 modes, but might be too cluttered ATM: manually adding each label/text individually, paste import, file import, URL source
-- [ ] Add License for source code
+
 - [ ] Research making Desktop version
+  - [ ] split to different adapter area for input, etc
+  - [ ] look into keystrokes or other methods of activating the popup for minimal loss of flow
+- [ ] Add License for source code
+- [ ] Cleanup and document code as needed
+- [ ] Research if I can make the permissions less scary sounding/maybe the URL method can avoid this
+- [ ] Look into saving into extension storage rather than localstorage in the browser
+- [x] Investigate being able to use URLs for the JSON instead of having to download JSON first. Outcome: added URL import mode in settings (manual, paste import, file import, URL source). Initial target use-case is raw gist URLs.
 - [x] Node script management
 - [x] Consider QOL up/down grades from using Vue, TS
 Outcome: Vue ran but became unwieldy to parse source in the repo. It was antithetical to the goal of this being a project that is not that hard to understand when inspected casually. NTS: if this extension was massive and view-heavy I would. TS seems to not have much ROI for similar readability reasons as well as mostly dealing with native JS APIs anyway. I favor TS for schema heavy, or third party integrations, and calls across APIs.

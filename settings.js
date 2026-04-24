@@ -12,6 +12,8 @@ const resourcesFileInput = document.getElementById("resources-file-input");
 const importResourcesBtn = document.getElementById("import-resources-btn");
 const resourcesJsonInput = document.getElementById("resources-json-input");
 const importJsonBtn = document.getElementById("import-json-btn");
+const resourcesUrlInput = document.getElementById("resources-url-input");
+const importUrlBtn = document.getElementById("import-url-btn");
 const statusEl = document.getElementById("status");
 let selectedImportFile = null;
 
@@ -20,7 +22,11 @@ let selectedImportFile = null;
 // ---------------------------------------------------------------------------
 
 async function load() {
-  const data = await browser.storage.local.get(["resources", "longPressDuration"]);
+  const data = await browser.storage.local.get([
+    "resources",
+    "longPressDuration",
+    "resourcesJsonUrl",
+  ]);
 
   if (Array.isArray(data.resources) && data.resources.length > 0) {
     snippets = data.resources.map(normalizeSnippet);
@@ -30,6 +36,7 @@ async function load() {
 
   longPressInput.value =
     typeof data.longPressDuration === "number" ? data.longPressDuration : DEFAULT_DURATION;
+  resourcesUrlInput.value = typeof data.resourcesJsonUrl === "string" ? data.resourcesJsonUrl : "";
 
   renderAll();
 }
@@ -260,6 +267,35 @@ importJsonBtn.addEventListener("click", () => {
   }
 });
 
+importUrlBtn.addEventListener("click", async () => {
+  const url = resourcesUrlInput.value.trim();
+
+  if (!url) {
+    showStatus("Enter a URL first.");
+    return;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    if (!/^https?:$/.test(parsedUrl.protocol)) {
+      showStatus("Only http/https URLs are supported.");
+      return;
+    }
+
+    const response = await fetch(parsedUrl.href, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const raw = await response.text();
+    const imported = normalizeImportedSnippets(JSON.parse(raw));
+    applyImportedSnippets(imported);
+  } catch (error) {
+    console.warn("Failed to import resources from URL.", error);
+    showStatus("URL import failed. Check URL, response, and JSON format.");
+  }
+});
+
 // ---------------------------------------------------------------------------
 // Save
 // ---------------------------------------------------------------------------
@@ -267,6 +303,7 @@ importJsonBtn.addEventListener("click", () => {
 saveBtn.addEventListener("click", async () => {
   const duration = parseInt(longPressInput.value, 10);
   const longPressDuration = Number.isFinite(duration) ? duration : DEFAULT_DURATION;
+  const resourcesJsonUrl = resourcesUrlInput.value.trim();
 
   const validSnippets = snippets.filter(
     (s) => s.label.trim() !== "" || s.text.some((t) => t.trim() !== "")
@@ -275,8 +312,11 @@ saveBtn.addEventListener("click", async () => {
   await browser.storage.local.set({
     resources: validSnippets,
     longPressDuration,
+    resourcesJsonUrl,
   });
-  await browser.storage.local.remove("resourcesJsonUrl");
+  if (!resourcesJsonUrl) {
+    await browser.storage.local.remove("resourcesJsonUrl");
+  }
   showStatus("Saved!");
 });
 

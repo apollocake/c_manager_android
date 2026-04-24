@@ -51,9 +51,12 @@ Example:
 2. In `Resource Source`, choose one of:
    - `Import JSON resource file`
    - `Or paste JSON directly`
-3. Click `Import File` or `Import Pasted JSON`.
+  - `Or load JSON from URL`
+3. Click `Import File`, `Import Pasted JSON`, or `Import From URL`.
 4. Confirm snippets appear in the list.
 5. Click `Save`.
+
+For URL imports, use a direct JSON endpoint (for example, a raw gist URL).
 
 After saving, the popup/snippet UI uses the imported resources.
 

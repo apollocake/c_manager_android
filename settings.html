@@ -26,8 +26,12 @@
     <label for="resources-json-input">Or paste JSON directly</label>
     <textarea id="resources-json-input" rows="6" placeholder='[{"label":"Hello","text":["Hello World"]}]'></textarea>
     <button id="import-json-btn" type="button">Import Pasted JSON</button>
+    <label for="resources-url-input">Or load JSON from URL</label>
+    <input id="resources-url-input" type="url" placeholder="https://gist.githubusercontent.com/.../raw/resources.json" />
+    <button id="import-url-btn" type="button">Import From URL</button>
     <small>
       Imported snippets are staged in the editor; tap Save to apply them.
+      URL mode expects top-level array JSON and works well with raw gist URLs.
     </small>
   </section>
 
