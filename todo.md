@@ -1,9 +1,10 @@
 
 - [ ] Research making Desktop version
   - [ ] split to different adapter area for input, etc
-  - [ ] look into keystrokes or other methods of activating the popup for minimal loss of flow
+  - [ ] Look into a way to take up whole viewport on android rather than the current frame: issues include rendering popup under elements when overscroll(?), Rendering downward when inputting at the bottom of the viewport where you can't scroll further
+  - [ ] Android: whole viewport popup
+  - [ ] Desktop: popup opened by clicking extension, see uBlock for inspiration
 - [ ] Add License for source code
-- [ ] Look into a way to take up whole viewport on android rather than the current frame: issues include rendering popup under elements when overscroll(?), Rendering downward when inputting at the bottom of the viewport where you can't scroll further
 - [ ] Add ability for labels/sections for reference or organization
 - [ ] Maybe even tabbed organization for large data sets (low priority)
 - [ ] Cleanup and document code as needed
