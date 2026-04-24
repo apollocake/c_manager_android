@@ -8,8 +8,13 @@
 - [ ] Add ability for labels/sections for reference or organization
 - [ ] Maybe even tabbed organization for large data sets (low priority)
 - [ ] Cleanup and document code as needed
-- [ ] Research if I can make the permissions less scary sounding/maybe the URL method can avoid this
-- [ ] Look into saving into extension storage rather than localstorage in the browser
+- [ ] When failing to parse, for now we need to notify the user with the same mechanism as 'Saved' bubble notification.
+- [ ] QOL. Look into why extension has bugs with old data when
+  - [ ] A. updating the URL (required page reload)
+  - [ ] B. Settings sometimes don't appear after upgrading. Disable/Enable app fixes this
+- [ ] QOL. Display JSON validation error when failing to parse rather than failing silently.
+- [x] Research if I can make the permissions less scary sounding/maybe the URL method can avoid this. Outcome: uses browser extension storage - already at the minimum permission level required
+- [x] Look into saving into extension storage rather than localstorage in the browser
 - [x] Investigate being able to use URLs for the JSON instead of having to download JSON first. Outcome: added URL import mode in settings (manual, paste import, file import, URL source). Initial target use-case is raw gist URLs.
 - [x] Node script management
 - [x] Consider QOL up/down grades from using Vue, TS
