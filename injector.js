@@ -36,20 +36,47 @@ function getBundledResources() {
   return normalizeResources(window.INJECTOR_RESOURCES || DEFAULT_RESOURCES);
 }
 
-// Load resources with precedence: saved settings resources -> bundled file.
+async function fetchResourcesFromUrl(url) {
+  const parsedUrl = new URL(url);
+  if (!/^https?:$/.test(parsedUrl.protocol)) {
+    throw new Error("Only http/https URLs are supported.");
+  }
+
+  const response = await fetch(parsedUrl.href, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const payload = JSON.parse(await response.text());
+  if (!Array.isArray(payload)) {
+    throw new Error("URL JSON must be a top-level array.");
+  }
+
+  return normalizeResources(payload);
+}
+
+// Load resources with precedence: URL data -> bundled file.
 async function hydrateConfig() {
   try {
-    const data = await browser.storage.local.get(["resources", "longPressDuration"]);
+    const data = await browser.storage.local.get(["longPressDuration", "resourcesJsonUrl"]);
 
     if (typeof data.longPressDuration === "number") {
       LONG_PRESS_DURATION = data.longPressDuration;
     }
 
-    const savedResources = normalizeResources(data.resources);
+    const url = typeof data.resourcesJsonUrl === "string" ? data.resourcesJsonUrl.trim() : "";
+    if (url) {
+      const urlResources = await fetchResourcesFromUrl(url);
+      if (urlResources.length > 0) {
+        RESOURCES = urlResources;
+        return;
+      }
+      console.warn("URL returned no valid resources; falling back to bundled resources.");
+    }
 
-    RESOURCES = savedResources.length > 0 ? savedResources : getBundledResources();
+    RESOURCES = getBundledResources();
   } catch (error) {
-    console.warn("Failed to load extension settings; using bundled resources.", error);
+    console.warn("Failed to load resources; using bundled resources.", error);
     RESOURCES = getBundledResources();
   }
 }

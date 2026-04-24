@@ -20,30 +20,16 @@
 
   <section id="resource-source-section">
     <h2>Resource Source</h2>
-    <label for="resources-file-input">Import JSON resource file (optional)</label>
-    <input id="resources-file-input" type="file" />
-    <button id="import-resources-btn" type="button">Import File</button>
-    <label for="resources-json-input">Or paste JSON directly</label>
-    <textarea id="resources-json-input" rows="6" placeholder='[{"label":"Hello","text":["Hello World"]}]'></textarea>
-    <button id="import-json-btn" type="button">Import Pasted JSON</button>
-    <label for="resources-url-input">Or load JSON from URL</label>
+    <label for="resources-url-input">Load JSON from URL</label>
     <input id="resources-url-input" type="url" placeholder="https://gist.githubusercontent.com/.../raw/resources.json" />
-    <button id="import-url-btn" type="button">Import From URL</button>
     <small>
-      Imported snippets are staged in the editor; tap Save to apply them.
-      URL mode expects top-level array JSON and works well with raw gist URLs.
+      Save the URL here to make the popup fetch its JSON at runtime. If the URL is empty,
+      the extension falls back to bundled resources.
     </small>
-  </section>
-
-  <section id="snippets-section">
-    <h2>Snippets</h2>
-    <div id="snippet-list"></div>
-    <button id="add-snippet-btn" type="button">+ Add Snippet</button>
   </section>
 
   <div id="status" role="status" aria-live="polite"></div>
 
-  <script src="injector.resources.js"></script>
   <script src="settings.js"></script>
 </body>
 </html>
