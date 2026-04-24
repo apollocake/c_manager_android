@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "dev:android": "web-ext run -t firefox-android --firefox-apk org.mozilla.firefox --android-device=9A181FFAZ003KA --adb-remove-old-artifacts"
+  },
   "devDependencies": {
     "web-ext": "^10.1.0"
   }

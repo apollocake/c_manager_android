@@ -1,9 +1,17 @@
 ## Development and running locally
 
 ### Start and Run extension on Phone via USB
+Find device id using adb:
+```
+adb devices
+```
 Run from the project folder:
 ```
-npx web-ext run -t firefox-android --firefox-apk org.mozilla.firefox --android-device=9A181FFAZ003KA --adb-remove-old-artifacts
+npx web-ext run -t firefox-android --firefox-apk org.mozilla.firefox --android-device=<device id> --adb-remove-old-artifacts
+```
+Or use the npm script from the package.json:
+```
+npm run dev:android
 ```
 To remotely debug on PC: In Firefox desktop, over USB, navigate to:
 ```
