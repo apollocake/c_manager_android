@@ -2,6 +2,7 @@ let LONG_PRESS_DURATION = 1100; // ms before popup appears - may be overridden f
 
 let longPressTimer = null;
 let activeInput = null;
+let lastFocusedInput = null;
 let popupEl = null;
 let popupPanelEl = null;
 
@@ -262,3 +263,18 @@ function cancelLongPress() {
 document.addEventListener("touchstart", handleTouchStart, { passive: true });
 document.addEventListener("touchend", cancelLongPress, { passive: true });
 document.addEventListener("touchmove", cancelLongPress, { passive: true });
+
+// --- Desktop: track last focused input for icon-click trigger ---
+
+document.addEventListener("focusin", (e) => {
+  const t = e.target;
+  if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable) {
+    lastFocusedInput = t;
+  }
+}, true);
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message?.type === "injector-open") {
+    createPopup(lastFocusedInput);
+  }
+});

@@ -15,7 +15,10 @@
     },
     "gecko_android": {}
   },
-  "permissions": ["storage"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": ["storage", "activeTab"],
   "options_ui": {
     "page": "settings.html",
     "browser_style": false,
