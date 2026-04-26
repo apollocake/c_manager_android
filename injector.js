@@ -1,9 +1,9 @@
-let LONG_PRESS_DURATION = 1100; // ms before popup appears — may be overridden from storage
+let LONG_PRESS_DURATION = 1100; // ms before popup appears - may be overridden from storage
 
 let longPressTimer = null;
 let activeInput = null;
 let popupEl = null;
-let popupRepositionRaf = null;
+let popupPanelEl = null;
 
 const DEFAULT_RESOURCES = [
   {
@@ -82,23 +82,40 @@ async function hydrateConfig() {
 }
 
 hydrateConfig();
+
 // --- Popup ---
 
 function createPopup(input) {
   removePopup();
   activeInput = input;
 
-  // Outer wrapper uses fixed positioning so it stays near the input on scroll
   popupEl = document.createElement("div");
-  Object.assign(popupEl.style, {
-    position: "fixed",
-    top: "0px",
-    left: "0px",
-    zIndex: "2147483647",
+  popupEl.className = "injector-popup";
+
+  popupPanelEl = document.createElement("div");
+  popupPanelEl.className = "injector-popup-panel";
+
+  const header = document.createElement("div");
+  header.className = "injector-popup-header";
+
+  const title = document.createElement("div");
+  title.className = "injector-popup-title";
+  title.textContent = "Quick Insert";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "injector-close-button";
+  closeBtn.type = "button";
+  closeBtn.setAttribute("aria-label", "Close popup");
+  closeBtn.textContent = "x";
+  closeBtn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    removePopup();
   });
 
-  const container = document.createElement("div");
-  container.className = "injector-popup";
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+  popupPanelEl.appendChild(header);
 
   const validItems = RESOURCES.filter(
     (item) =>
@@ -130,19 +147,16 @@ function createPopup(input) {
 
     row.appendChild(label);
     row.appendChild(insertBtn);
-    container.appendChild(row);
+    popupPanelEl.appendChild(row);
   });
 
-  popupEl.appendChild(container);
+  popupEl.appendChild(popupPanelEl);
   document.body.appendChild(popupEl);
 
   // Blur after capturing the insertion target so Android can dismiss the keyboard.
   if (typeof activeInput?.blur === "function") {
     activeInput.blur();
   }
-
-  positionPopup();
-  addRepositionListeners();
 
   // Dismiss on any interaction outside the popup
   setTimeout(() => {
@@ -152,69 +166,13 @@ function createPopup(input) {
   }, 0);
 }
 
-function positionPopup() {
-  if (!popupEl || !activeInput) {
-    return;
-  }
-
-  const rect = activeInput.getBoundingClientRect();
-  const viewportWidth = window.visualViewport?.width || window.innerWidth;
-  const popupWidth = popupEl.offsetWidth || 170;
-
-  const top = Math.max(4, rect.bottom + 6);
-  const left = Math.min(
-    Math.max(4, rect.left),
-    Math.max(4, viewportWidth - popupWidth - 4)
-  );
-
-  popupEl.style.top = `${top}px`;
-  popupEl.style.left = `${left}px`;
-}
-
-function schedulePositionPopup() {
-  if (!popupEl) {
-    return;
-  }
-
-  if (popupRepositionRaf) {
-    cancelAnimationFrame(popupRepositionRaf);
-  }
-
-  popupRepositionRaf = requestAnimationFrame(() => {
-    popupRepositionRaf = null;
-    positionPopup();
-  });
-}
-
-function addRepositionListeners() {
-  window.addEventListener("scroll", schedulePositionPopup, true);
-  window.addEventListener("resize", schedulePositionPopup, true);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", schedulePositionPopup);
-    window.visualViewport.addEventListener("scroll", schedulePositionPopup);
-  }
-}
-
-function removeRepositionListeners() {
-  window.removeEventListener("scroll", schedulePositionPopup, true);
-  window.removeEventListener("resize", schedulePositionPopup, true);
-  if (window.visualViewport) {
-    window.visualViewport.removeEventListener("resize", schedulePositionPopup);
-    window.visualViewport.removeEventListener("scroll", schedulePositionPopup);
-  }
-  if (popupRepositionRaf) {
-    cancelAnimationFrame(popupRepositionRaf);
-    popupRepositionRaf = null;
-  }
-}
-
 function handleOutside(e) {
-  if (!popupEl) {
+  if (!popupEl || !popupPanelEl) {
     return;
   }
 
   const path = typeof e.composedPath === "function" ? e.composedPath() : [];
-  const clickedInsidePopup = path.includes(popupEl) || popupEl.contains(e.target);
+  const clickedInsidePopup = path.includes(popupPanelEl) || popupPanelEl.contains(e.target);
 
   if (!clickedInsidePopup) {
     removePopup();
@@ -222,11 +180,11 @@ function handleOutside(e) {
 }
 
 function removePopup() {
-  removeRepositionListeners();
   if (popupEl) {
     popupEl.remove();
     popupEl = null;
   }
+  popupPanelEl = null;
   document.removeEventListener("pointerdown", handleOutside, true);
   document.removeEventListener("touchstart", handleOutside, true);
   document.removeEventListener("mousedown", handleOutside, true);
