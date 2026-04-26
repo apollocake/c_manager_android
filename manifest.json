@@ -39,7 +39,8 @@
       ],
       "js": [
         "injector.resources.js",
-        "injector.js"
+        "injector.js",
+        "injector.desktop.js"
       ]
     }
   ]

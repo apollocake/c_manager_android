@@ -30,9 +30,9 @@ Steps to sign and sideload the extension so it can be used without a PC connecti
 - Generate an **API key** and **API secret**
 
 ### Sign the extension
-- Run from the project folder:
+- Run from the project folder: (note: remove ignore files for desktop version)
   ```
-  npx web-ext sign --channel unlisted --api-key <your-key> --api-secret <your-secret>
+  npx web-ext sign --channel unlisted --api-key <your-key> --api-secret <your-secret> --ignore-files injector.desktop.js
   ```
 - The signed `.xpi` will be saved to `web-ext-artifacts/`
 - Repeat this step (with a bumped `version` in `manifest.json`) for every update
