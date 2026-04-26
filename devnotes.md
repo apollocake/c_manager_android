@@ -59,3 +59,11 @@ Firefox for Android stable does not allow installing extensions directly from lo
 - Use the install-from-file option and pick your signed `.xpi`
 
 Without Firefox Nightly + debug/advanced mode, current Firefox Android builds will block install-from-file workflows.
+
+### Kill old processes
+```
+Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match "web-ext run" } | Select-Object ProcessId, CommandLine
+```
+```
+Stop-Process -Id <process_id> -Force 
+```
