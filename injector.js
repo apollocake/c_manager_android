@@ -1,9 +1,11 @@
 let LONG_PRESS_DURATION = 1100; // ms before popup appears - may be overridden from storage
 
 let longPressTimer = null;
+let lastFocusedInput = null;
 let activeInput = null;
 let popupEl = null;
 let popupPanelEl = null;
+let popupTargetFrameId = 0;
 
 const DEFAULT_RESOURCES = [
   {
@@ -85,9 +87,10 @@ hydrateConfig();
 
 // --- Popup ---
 
-function createPopup(input) {
+function createPopup(input, options = {}) {
   removePopup();
-  activeInput = input;
+  activeInput = input || lastFocusedInput;
+  popupTargetFrameId = typeof options?.targetFrameId === "number" ? options.targetFrameId : 0;
 
   popupEl = document.createElement("div");
   popupEl.className = "injector-popup";
@@ -141,7 +144,21 @@ function createPopup(input) {
     insertBtn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      injectText(activeInput, item.text);
+
+      if (popupTargetFrameId !== 0) {
+        browser.runtime
+          .sendMessage({
+            type: "injector-insert",
+            targetFrameId: popupTargetFrameId,
+            textParts: item.text
+          })
+          .catch(() => {
+            // Runtime messaging can fail on restricted pages; ignore silently.
+          });
+      } else {
+        injectText(activeInput, item.text);
+      }
+
       removePopup();
     });
 
@@ -185,6 +202,7 @@ function removePopup() {
     popupEl = null;
   }
   popupPanelEl = null;
+  popupTargetFrameId = 0;
   document.removeEventListener("pointerdown", handleOutside, true);
   document.removeEventListener("touchstart", handleOutside, true);
   document.removeEventListener("mousedown", handleOutside, true);
@@ -238,6 +256,43 @@ function injectText(input, textParts) {
   input.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
+function isEditableElement(node) {
+  return !!node && (node.tagName === "INPUT" || node.tagName === "TEXTAREA" || node.isContentEditable);
+}
+
+function getBestInsertTarget() {
+  const activeEl = document.activeElement;
+  if (isEditableElement(activeEl)) {
+    return activeEl;
+  }
+
+  if (isEditableElement(lastFocusedInput)) {
+    return lastFocusedInput;
+  }
+
+  return null;
+}
+
+document.addEventListener(
+  "focusin",
+  (e) => {
+    const t = e.target;
+    if (isEditableElement(t)) {
+      lastFocusedInput = t;
+    }
+  },
+  true
+);
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message?.type !== "injector-insert") {
+    return;
+  }
+
+  const target = getBestInsertTarget();
+  injectText(target, message.textParts);
+});
+
 // --- Long-press detection ---
 
 function handleTouchStart(e) {
@@ -248,9 +303,12 @@ function handleTouchStart(e) {
     t.isContentEditable;
 
   if (!isInput) return;
+  lastFocusedInput = t;
 
   longPressTimer = setTimeout(() => {
-    createPopup(t);
+    browser.runtime.sendMessage({ type: "injector-open" }).catch(() => {
+      // Runtime messaging can fail on restricted pages; ignore silently.
+    });
   }, LONG_PRESS_DURATION);
 }
 
